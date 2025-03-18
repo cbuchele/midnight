@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="connections-container">
+    <h2>Site Connections</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Source URL</th>
+                <th>Destination URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for conn in connections %}
+            <tr>
+                <td>{{ conn.URL }}</td>
+                <td>{{ conn.SITE }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

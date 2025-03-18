@@ -7,13 +7,28 @@ import json
 import subprocess
 import socks
 import httplib2
+from tor_proxy import TorProxy
 import urllib.request as request
 
+tor_proxy = TorProxy()
+
+proxy_host = "localhost"
+proxy_port = 9050
+
+
+def get_proxy():
+    """Return the current proxy settings."""
+    return tor_proxy.get_proxy()
+
+def set_proxy(host, port):
+    """Set the proxy settings."""
+    global tor_proxy
+    tor_proxy = TorProxy(socks_port=port)
 
 def onionStatus(url):
     try:
         proxy = httplib2.ProxyInfo(
-            proxy_type=socks.PROXY_TYPE_SOCKS5, proxy_host='localhost', proxy_port=9050)
+            proxy_type=socks.PROXY_TYPE_SOCKS5, proxy_host=proxy_host, proxy_port=proxy_port)
         http = httplib2.Http(proxy_info=proxy, timeout=30)
         resp = http.request(url, headers={
                             'Connection': 'close', 'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'})[0]
@@ -25,7 +40,7 @@ def onionStatus(url):
 def onionHTML(url):
     try:
         proxy = httplib2.ProxyInfo(
-            proxy_type=socks.PROXY_TYPE_SOCKS5, proxy_host='localhost', proxy_port=9050)
+            proxy_type=socks.PROXY_TYPE_SOCKS5, proxy_host=proxy_host, proxy_port=proxy_port)
         http = httplib2.Http(proxy_info=proxy, timeout=30)
         content = http.request(url, headers={
                                'Connection': 'close', 'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'})[1]

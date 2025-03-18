@@ -3,21 +3,22 @@ from modules.sqlite import *
 import os
 import random
 
+def run_midnight_scan(proxy_host="localhost", proxy_port=9050):
+    # Set proxy settings
+    set_proxy(proxy_host, proxy_port)
 
-def midnight():
     targetList = inputList()
     titlePrinter()
     rootcheck()
     masterList = []
     while len(targetList) > 0:
-        if not os.path.exists("../output/midnight.db"):
+        if not os.path.exists("output/midnight.db"):
             createDB()
         midnightCon = connectDB()
         createTables(midnightCon)
         url = random.choice(targetList)
         torstatus()
         extensions = ('.jpg', 'jpeg', '.mp4', '.png', '.gif')
-        # This is for any site that makes the program hang excessively long
         blacklist = ('http://76qugh5bey5gum7l.onion')
         if url not in masterList and not url.endswith(extensions) and not url.startswith(blacklist):
             print("New iteration:")
@@ -46,13 +47,12 @@ def midnight():
                     url, urlDir = urlSplitter(url)
                     if urlDir == "":
                         urlDir = "/"
-                    data = addDeepData(url, urlDir, html, midnightCon)
+                    addDeepData(url, urlDir, html, midnightCon)
                     for connection in res:
                         site, siteDir = urlSplitter(connection)
                         if siteDir == "":
                             siteDir = "/"
-                        connections = addDeepConnections(
-                            url, urlDir, site, siteDir, midnightCon)
+                        addDeepConnections(url, urlDir, site, siteDir, midnightCon)
             else:
                 targetList.remove(url)
                 print("URL gave bad response...not scanning")
@@ -68,13 +68,7 @@ def midnight():
             targetList.remove(url)
             print(url)
             print("URL ends with extension not compatible")
-    '''
-    #Keeps the program running indefinitely
-        while True:
-            python = sys.executable
-            os.execl(python, python, *sys.argv)
-    '''
-
+    return "Scan completed!"
 
 if __name__ == '__main__':
-    midnight()
+    run_midnight_scan()

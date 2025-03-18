@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-results">
+    <h2>Search Results for "{{ term }}"</h2>
+    <ul>
+        {% for result in results %}
+        <li>{{ result }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

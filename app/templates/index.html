@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-container">
+    <h2>Explore the Deep Web</h2>
+    <button id="start-scan">Start Scan</button>
+    <p id="scan-status">Status: Idle</p>
+    <div id="logs" style="white-space: pre-wrap; font-family: monospace;"></div>
+    <form action="{{ url_for('main.search') }}" method="POST">
+        <input type="text" name="search_term" placeholder="Enter a search term..." required>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('start-scan').addEventListener('click', function() {
+        fetch('/start_scan', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.status);
+                updateScanStatus();
+            });
+    });
+
+    function updateScanStatus() {
+        fetch('/scan_status')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('scan-status').innerText = `Status: ${data.status}`;
+                if (data.status === "running") {
+                    setTimeout(updateScanStatus, 1000); // Poll every second
+                }
+            });
+    }
+</script>
+{% endblock %}
